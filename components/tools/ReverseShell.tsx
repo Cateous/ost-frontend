@@ -40,7 +40,7 @@ export default function ReverseShell() {
     setResult(null);
     setError(null);
     const res = await generatePayload(values.ip, values.port);
-    if (res.error) {
+    if ("error" in res) {
       setError(res.error);
     } else {
       setResult(res.data);

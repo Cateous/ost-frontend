@@ -55,7 +55,7 @@ export default function NmapScan() {
     setResult(null);
     setError(null);
     const res = await runNmapScan(values.target, values.flags);
-    if (res.error) {
+    if ("error" in res) {
       setError(res.error);
     } else {
       setResult(res.data);

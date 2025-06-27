@@ -39,7 +39,7 @@ export default function SubdomainEnum() {
     setResult(null);
     setError(null);
     const res = await runSubdomainEnumeration(values.domain);
-    if (res.error) {
+    if ("error" in res) {
       setError(res.error);
     } else {
       setResult(res.data);

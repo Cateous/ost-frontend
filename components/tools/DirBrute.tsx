@@ -39,7 +39,7 @@ export default function DirBrute() {
     setResult(null);
     setError(null);
     const res = await runDirBrute(values.url);
-    if (res.error) {
+    if ("error" in res) {
       setError(res.error);
     } else {
       setResult(res.data);

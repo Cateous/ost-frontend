@@ -8,8 +8,9 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
+  User,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth } from "../../lib/firebase";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -48,7 +49,7 @@ export default function AuthenticatePage() {
 
   useEffect(() => {
     // If a user is already logged in, redirect them to the main page.
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user: User | null) => {
       if (user) {
         router.push("/");
       }
