@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -44,16 +44,6 @@ export default function AuthForm() {
   const [signupPassword, setSignupPassword] = useState("");
   const [loading, setLoading] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("authenticate");
-
-  useEffect(() => {
-    // If a user is already logged in, redirect them to the main page.
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        router.push("/");
-      }
-    });
-    return () => unsubscribe();
-  }, [router]);
 
   const handleAuthError = (error: any) => {
     console.error("Firebase Auth Error:", error);
@@ -113,7 +103,7 @@ export default function AuthForm() {
     setLoading("signin");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // onAuthStateChanged will handle the redirect on success
+      // onAuthStateChanged in the parent page will handle the redirect on success
     } catch (error) {
       handleAuthError(error);
     } finally {
@@ -126,7 +116,7 @@ export default function AuthForm() {
     const provider = providerType === 'google' ? new GoogleAuthProvider() : new GithubAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      // onAuthStateChanged will handle the redirect on success
+      // onAuthStateChanged in the parent page will handle the redirect on success
     } catch (error) {
       handleAuthError(error);
     } finally {
@@ -135,108 +125,103 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter text-primary [text-shadow:0_0_15px_hsl(var(--primary)/0.4)] mb-8 animate-fade-in-up text-center px-4">
-          Offensive Security Toolkit (OST)
-      </h1>
-      <div 
-        className="w-full max-w-sm rounded-lg bg-card/60 border border-accent/20 p-6 sm:p-8 shadow-2xl shadow-primary/20 backdrop-blur-lg animate-fade-in-up"
-        style={{ animationDelay: '200ms' }}
-      >
-          <div className="text-center mb-6">
-              <div className="inline-flex items-center gap-x-3 font-headline text-2xl sm:text-3xl font-bold text-primary border-2 border-accent/20 rounded-lg px-4 py-2 transition-all duration-300 hover:-translate-y-1">
-                  <span>::</span>
-                  <div className="text-center">
-                      <div>NODE-7 SECURE</div>
-                      <div>INTERFACE</div>
-                  </div>
-                  <span>::</span>
-              </div>
-          </div>
-          
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="authenticate">Authenticate</TabsTrigger>
-              <TabsTrigger value="signup">Register Node</TabsTrigger>
-            </TabsList>
+    <div 
+      className="w-full max-w-sm rounded-lg bg-card/60 border border-accent/20 p-6 sm:p-8 shadow-2xl shadow-primary/20 backdrop-blur-lg animate-fade-in-up"
+      style={{ animationDelay: '200ms' }}
+    >
+        <div className="text-center mb-6">
+            <div className="inline-flex items-center gap-x-3 font-headline text-2xl sm:text-3xl font-bold text-primary border-2 border-accent/20 rounded-lg px-4 py-2 transition-all duration-300 hover:-translate-y-1">
+                <span>::</span>
+                <div className="text-center">
+                    <div>NODE-7 SECURE</div>
+                    <div>INTERFACE</div>
+                </div>
+                <span>::</span>
+            </div>
+        </div>
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="authenticate">Authenticate</TabsTrigger>
+            <TabsTrigger value="signup">Register Node</TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="authenticate" className="mt-4">
-              <p className="text-center mt-4 text-sm text-foreground/70">
-                Trace secured. Payloads locked. Authenticate to deploy.
-              </p>
-              <form onSubmit={handleSignIn} className="mt-4 space-y-6">
-                  <div className="space-y-4">
-                      <div className="space-y-2">
-                          <Label htmlFor="email">Email</Label>
-                          <Input id="email" type="email" placeholder="user@domain.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="password">Password</Label>
-                          <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                      </div>
-                  </div>
+          <TabsContent value="authenticate" className="mt-4">
+            <p className="text-center mt-4 text-sm text-foreground/70">
+              Trace secured. Payloads locked. Authenticate to deploy.
+            </p>
+            <form onSubmit={handleSignIn} className="mt-4 space-y-6">
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" type="email" placeholder="user@domain.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="password">Password</Label>
+                        <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    </div>
+                </div>
 
-                  <Button
-                      type="submit"
-                      className="w-full mt-4 transition-all duration-300 hover:-translate-y-1"
-                      size="lg"
-                      disabled={loading === 'signin'}
-                  >
-                      {loading === 'signin' ? <Loader2 className="animate-spin" /> : '[ INITIATE UPLINK ]'}
-                  </Button>
-              </form>
+                <Button
+                    type="submit"
+                    className="w-full mt-4 transition-all duration-300 hover:-translate-y-1"
+                    size="lg"
+                    disabled={loading === 'signin'}
+                >
+                    {loading === 'signin' ? <Loader2 className="animate-spin" /> : '[ INITIATE UPLINK ]'}
+                </Button>
+            </form>
 
-              <div className="relative mt-4">
-                  <div className="absolute inset-0 flex items-center">
-                      <span className="w-full border-t border-accent/20" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card px-2 text-muted-foreground">
-                          GHOST SIGN-IN VIA SECURE CHANNEL
-                      </span>
-                  </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                  <Button variant="outline" onClick={() => handleSocialSignIn('google')} className="transition-all duration-300 hover:scale-[1.03]" disabled={loading === 'google'}>
-                      {loading === 'google' ? <Loader2 className="animate-spin mr-2" /> : <GoogleIcon className="mr-2 h-4 w-4" />}
-                      Google
-                  </Button>
-                  <Button variant="outline" onClick={() => handleSocialSignIn('github')} className="transition-all duration-300 hover:scale-[1.03]" disabled={loading === 'github'}>
-                      {loading === 'github' ? <Loader2 className="animate-spin mr-2" /> : <GitHubIcon className="mr-2 h-4 w-4" />}
-                      GitHub
-                  </Button>
-              </div>
-            </TabsContent>
+            <div className="relative mt-4">
+                <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-accent/20" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-card px-2 text-muted-foreground">
+                        GHOST SIGN-IN VIA SECURE CHANNEL
+                    </span>
+                </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 mt-4">
+                <Button variant="outline" onClick={() => handleSocialSignIn('google')} className="transition-all duration-300 hover:scale-[1.03]" disabled={loading === 'google'}>
+                    {loading === 'google' ? <Loader2 className="animate-spin mr-2" /> : <GoogleIcon className="mr-2 h-4 w-4" />}
+                    Google
+                </Button>
+                <Button variant="outline" onClick={() => handleSocialSignIn('github')} className="transition-all duration-300 hover:scale-[1.03]" disabled={loading === 'github'}>
+                    {loading === 'github' ? <Loader2 className="animate-spin mr-2" /> : <GitHubIcon className="mr-2 h-4 w-4" />}
+                    GitHub
+                </Button>
+            </div>
+          </TabsContent>
 
-            <TabsContent value="signup" className="mt-4">
-              <p className="text-center mt-4 text-sm text-foreground/70">
-                  Bootstrapping agent... Please inject credentials...
-              </p>
-              <form onSubmit={handleSignUp} className="mt-4 space-y-6">
-                  <div className="space-y-4">
-                      <div className="space-y-2">
-                          <Label htmlFor="signup-email">Email</Label>
-                          <Input id="signup-email" type="email" placeholder="agent@sec.net" value={signupEmail} onChange={(e) => setSignupEmail(e.target.value)} required />
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="signup-password">Password</Label>
-                          <Input id="signup-password" type="password" placeholder="••••••••" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required />
-                      </div>
-                  </div>
+          <TabsContent value="signup" className="mt-4">
+            <p className="text-center mt-4 text-sm text-foreground/70">
+                Bootstrapping agent... Please inject credentials...
+            </p>
+            <form onSubmit={handleSignUp} className="mt-4 space-y-6">
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="signup-email">Email</Label>
+                        <Input id="signup-email" type="email" placeholder="agent@sec.net" value={signupEmail} onChange={(e) => setSignupEmail(e.target.value)} required />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="signup-password">Password</Label>
+                        <Input id="signup-password" type="password" placeholder="••••••••" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required />
+                    </div>
+                </div>
 
-                  <Button
-                      type="submit"
-                      className="w-full transition-all duration-300 hover:-translate-y-1"
-                      size="lg"
-                      disabled={loading === 'signup'}
-                  >
-                      {loading === 'signup' ? <Loader2 className="animate-spin" /> : '[ CREATE IDENTITY ]'}
-                  </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
-      </div>
+                <Button
+                    type="submit"
+                    className="w-full transition-all duration-300 hover:-translate-y-1"
+                    size="lg"
+                    disabled={loading === 'signup'}
+                >
+                    {loading === 'signup' ? <Loader2 className="animate-spin" /> : '[ CREATE IDENTITY ]'}
+                </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
     </div>
   );
 }
