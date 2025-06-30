@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -54,6 +55,7 @@ export default function AuthForm() {
         break;
       case "auth/user-not-found":
       case "auth/wrong-password":
+      case "auth/invalid-credential":
         message = "Access denied. Please check your credentials.";
         break;
       case "auth/email-already-in-use":
@@ -77,6 +79,14 @@ export default function AuthForm() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!signupEmail || !signupPassword) {
+      toast({
+        variant: "destructive",
+        title: "Registration Error",
+        description: "Email and password are required to create an identity.",
+      });
+      return;
+    }
     setLoading("signup");
     try {
       await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
@@ -100,6 +110,14 @@ export default function AuthForm() {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      toast({
+        variant: "destructive",
+        title: "Authentication Error",
+        description: "Access denied. Please check your credentials.",
+      });
+      return;
+    }
     setLoading("signin");
     try {
       await signInWithEmailAndPassword(auth, email, password);
