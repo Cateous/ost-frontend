@@ -39,7 +39,7 @@ export default function AuthenticatePage() {
   // If we get here, we know for sure the user is logged out.
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
-      <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter text-primary [text-shadow:0_0_15px_hsl(var(--primary)/0.4)] mb-8 animate-fade-in-up text-center px-4">
+      <h1 className="font-headline text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter text-primary [text-shadow:0_0_15px_hsl(var(--primary)/0.4)] mb-8 animate-fade-in-up text-center px-4">
           Offensive Security Toolkit (OST)
       </h1>
       <AuthForm />
